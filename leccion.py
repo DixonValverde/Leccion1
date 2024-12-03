@@ -12,11 +12,12 @@
 
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import ttk
 
 # Lista para almacenar los alumnos
 alumnos = []
 
-# Funcion para calcular la calificacion a partir de la nota
+# Función para calcular la calificación a partir de la nota
 def calificacion(nota):
     if nota < 5:
         return "SS"
@@ -27,7 +28,7 @@ def calificacion(nota):
     else:
         return "SB"
 
-# Funcion para agregar un alumno
+# Función para agregar un alumno
 def agregar_alumno():
     cedula = entry_cedula.get()
     apellidos = entry_apellidos.get()
@@ -35,7 +36,7 @@ def agregar_alumno():
     try:
         nota = float(entry_nota.get())
         if any(alumno["cedula"] == cedula for alumno in alumnos):
-            messagebox.showerror("Error", "Ya existe un alumno con esa cedula.")
+            messagebox.showerror("Error", "Ya existe un alumno con esa cédula.")
         else:
             alumnos.append({
                 "cedula": cedula,
@@ -44,42 +45,32 @@ def agregar_alumno():
                 "nota": nota,
                 "calificacion": calificacion(nota)
             })
-            messagebox.showinfo("Exito", "Alumno agregado correctamente.")
             limpiar_campos()
-            mostrar_alumnos()
+            actualizar_tabla()
+            messagebox.showinfo("Éxito", "Alumno agregado correctamente.")
     except ValueError:
-        messagebox.showerror("Error", "Por favor, ingrese una nota valida o llene todos los datos correctamente.")
+        messagebox.showerror("Error", "Por favor, ingrese una nota válida.")
 
-# Función para eliminar un alumno por cédula
+# Función para eliminar un alumno
 def eliminar_alumno():
     cedula = entry_cedula.get()
     global alumnos
     alumnos = [alumno for alumno in alumnos if alumno["cedula"] != cedula]
-    messagebox.showinfo("Exito", "Alumno eliminado, si existia en el registro.")
     limpiar_campos()
-    mostrar_alumnos()
+    actualizar_tabla()
+    messagebox.showinfo("Éxito", "Alumno eliminado, si existía en el registro.")
 
-# Función para mostrar alumnos
-def mostrar_alumnos():
-    text_resultado.delete(1.0, tk.END)
-    if not alumnos:
-        text_resultado.insert(tk.END, "No hay alumnos registrados.\n")
-    else:
-        text_resultado.insert(tk.END, "CEDULA\tAPELLIDOS\tNOMBRE\tNOTA\tCALIFICACION\n")
-        for alumno in alumnos:
-            text_resultado.insert(tk.END, f"{alumno['cedula']}\t{alumno['apellidos']}\t{alumno['nombre']}\t{alumno['nota']}\t{alumno['calificacion']}\n")
-
-# Función para consultar un alumno por cédula
+# Función para consultar un alumno
 def consultar_alumno():
     cedula = entry_cedula.get()
     for alumno in alumnos:
-        if alumno['cedula'] == cedula:
-            messagebox.showinfo("Resultado", f"Nota: {alumno['nota']}, Calificación: {alumno['calificacion']}")
+        if alumno["cedula"] == cedula:
+            messagebox.showinfo("Consulta", f"Apellidos: {alumno['apellidos']}\nNombre: {alumno['nombre']}\nNota: {alumno['nota']}\nCalificación: {alumno['calificacion']}")
             return
-    messagebox.showerror("Error", "Alumno no encontrado.")
+    messagebox.showerror("Error", "No se encontró un alumno con esa cédula.")
 
 # Función para modificar la nota de un alumno
-def nota():
+def modificar_nota():
     cedula = entry_cedula.get()
     try:
         nueva_nota = float(entry_nota.get())
@@ -87,63 +78,57 @@ def nota():
             if alumno["cedula"] == cedula:
                 alumno["nota"] = nueva_nota
                 alumno["calificacion"] = calificacion(nueva_nota)
-                messagebox.showinfo("Exito", "Nota modificada correctamente.")
                 limpiar_campos()
-                mostrar_alumnos()
+                actualizar_tabla()
+                messagebox.showinfo("Éxito", "Nota modificada correctamente.")
                 return
-        messagebox.showerror("Error", "Alumno no encontrado.")
+        messagebox.showerror("Error", "No se encontró un alumno con esa cédula.")
     except ValueError:
-        messagebox.showerror("Error", "Por favor, ingrese una nota valida.")
+        messagebox.showerror("Error", "Por favor, ingrese una nota válida.")
 
-# Función para limpiar los campos de entrada
+# Funcion para mostrar todos los alumnos
+def mostrar_alumnos():
+    actualizar_tabla()
+    messagebox.showinfo("Alumnos", f"Se han mostrado {len(alumnos)} alumnos en la tabla.")
+
+# Funcion para mostrar los alumnos suspendidos (nota < 5)
+def mostrar_suspendidos():
+    actualizar_tabla([alumno for alumno in alumnos if alumno["nota"] < 5])
+
+# Funcion para mostrar los alumnos aprobados (nota >= 5)
+def mostrar_aprobados():
+    actualizar_tabla([alumno for alumno in alumnos if alumno["nota"] >= 5])
+
+# Funcion para mostrar el cuadro de honor (nota >= 9)
+def cuadro_de_honor():
+    actualizar_tabla([alumno for alumno in alumnos if alumno["nota"] >= 9])
+
+# Funcion para actualizar la tabla (Treeview)
+def actualizar_tabla(filtrar=None):
+    # Limpiar la tabla
+    for row in tabla.get_children():
+        tabla.delete(row)
+    # Insertar datos actualizados
+    lista = filtrar if filtrar is not None else alumnos
+    for alumno in lista:
+        tabla.insert("", tk.END, values=(alumno["cedula"], alumno["apellidos"], alumno["nombre"], alumno["nota"], alumno["calificacion"]))
+
+# Funcion para limpiar los campos de entrada
 def limpiar_campos():
     entry_cedula.delete(0, tk.END)
     entry_apellidos.delete(0, tk.END)
     entry_nombre.delete(0, tk.END)
     entry_nota.delete(0, tk.END)
 
-# Función para mostrar los suspensos
-def suspendidos():
-    text_resultado.delete(1.0, tk.END)
-    if not any(alumno["nota"] < 5 for alumno in alumnos):
-        text_resultado.insert(tk.END, "No hay alumnos suspensos.\n")
-    else:
-        text_resultado.insert(tk.END, "CEDULA\tAPELLIDOS\tNOMBRE\tNOTA\tCALIFICACION\n")
-        for alumno in alumnos:
-            if alumno["nota"] < 5:
-                text_resultado.insert(tk.END, f"{alumno["cedula"]}\t{alumno["apellidos"]}\t{alumno["nombre"]}\t{alumno["nota"]}\t{alumno["calificacion"]}\n")
-
-# Función para mostrar los aprobados
-def aprobados():
-    text_resultado.delete(1.0, tk.END)
-    if not any(alumno["nota"] >= 5 for alumno in alumnos):
-        text_resultado.insert(tk.END, "No hay alumnos aprobados.\n")
-    else:
-        text_resultado.insert(tk.END, "CEDULA\tAPELLIDOS\tNOMBRE\tNOTA\tCALIFICACION\n")
-        for alumno in alumnos:
-            if alumno["nota"] >= 5:
-                text_resultado.insert(tk.END, f"{alumno["cedula"]}\t{alumno["apellidos"]}\t{alumno["nombre"]}\t{alumno["nota"]}\t{alumno["calificacion"]}\n")
-
-# Función para mostrar los candidatos a matrícula de honor (MH)
-def mostrar_mh():
-    text_resultado.delete(1.0, tk.END)
-    if not any(alumno["nota"] == 10 for alumno in alumnos):
-        text_resultado.insert(tk.END, "No hay candidatos a matrícula de honor.\n")
-    else:
-        text_resultado.insert(tk.END, "CEDULA\tAPELLIDOS\tNOMBRE\tNOTA\tCALIFICACION\n")
-        for alumno in alumnos:
-            if alumno["nota"] == 10:
-                text_resultado.insert(tk.END, f"{alumno["cedula"]}\t{alumno["apellidos"]}\t{alumno["nombre"]}\t{alumno["nota"]}\t{alumno["calificacion"]}\n")
-
 # Ventana principal
 root = tk.Tk()
 root.title("Gestor de Alumnos")
 
-# Crear los widgets
+# Crear los widgets y botones
 frame_inputs = tk.Frame(root)
 frame_inputs.pack(pady=10)
 
-tk.Label(frame_inputs, text="Cedula:").grid(row=0, column=0, padx=5, pady=5)
+tk.Label(frame_inputs, text="Cédula:").grid(row=0, column=0, padx=5, pady=5)
 entry_cedula = tk.Entry(frame_inputs)
 entry_cedula.grid(row=0, column=1, padx=5, pady=5)
 
@@ -165,29 +150,38 @@ frame_buttons.pack(pady=10)
 btn_agregar = tk.Button(frame_buttons, text="1-Agregar Alumno", command=agregar_alumno, bg="#FFC0CB", fg="black")
 btn_agregar.grid(row=0, column=0, padx=5, pady=5)
 
-btn_eliminar = tk.Button(frame_buttons, text="2-Eliminar Alumno", command=eliminar_alumno, bg="#FFC0CB", fg="black")
+btn_eliminar = tk.Button(frame_buttons, text="2-Eliminar Alumno", command=eliminar_alumno, bg="#FFB6C1", fg="black")
 btn_eliminar.grid(row=0, column=1, padx=5, pady=5)
 
 btn_consultar = tk.Button(frame_buttons, text="3-Consultar Alumno", command=consultar_alumno, bg="#ADD8E6", fg="black")
 btn_consultar.grid(row=0, column=2, padx=5, pady=5)
 
-btn_modificar = tk.Button(frame_buttons, text="4-Modificar Nota", command=nota, bg="#FFFFE0", fg="black")
+btn_modificar = tk.Button(frame_buttons, text="4-Modificar Nota", command=modificar_nota, bg="#FFFFE0", fg="black")
 btn_modificar.grid(row=0, column=3, padx=5, pady=5)
 
-btn_mostrar = tk.Button(frame_buttons, text="5-Mostrar Alumnos", command=mostrar_alumnos, bg="#FFFFE0", fg="black")
+btn_mostrar = tk.Button(frame_buttons, text="5-Mostrar Alumnos", command=mostrar_alumnos, bg="#F5F5F5", fg="black")
 btn_mostrar.grid(row=0, column=4, padx=5, pady=5)
 
-btn_suspensos = tk.Button(frame_buttons, text="6-Suspendidos", command=suspendidos, bg="#FF6347", fg="white")
-btn_suspensos.grid(row=0, column=5, padx=5, pady=5)
+btn_suspendidos = tk.Button(frame_buttons, text="6-Suspendidos", command=mostrar_suspendidos, bg="#FF6347", fg="black")
+btn_suspendidos.grid(row=0, column=5, padx=5, pady=5)
 
-btn_aprobados = tk.Button(frame_buttons, text="7-Aprobados", command=aprobados, bg="#90EE90", fg="black")
+btn_aprobados = tk.Button(frame_buttons, text="7-Aprobados", command=mostrar_aprobados, bg="#90EE90", fg="black")
 btn_aprobados.grid(row=0, column=6, padx=5, pady=5)
 
-btn_mh = tk.Button(frame_buttons, text="8-Cuadro de Honor", command=mostrar_mh, bg="#FFD700", fg="black")
-btn_mh.grid(row=0, column=7, padx=5, pady=5)
+btn_cuadro = tk.Button(frame_buttons, text="8-Cuadro de Honor", command=cuadro_de_honor, bg="#FFD700", fg="black")
+btn_cuadro.grid(row=0, column=7, padx=5, pady=5)
 
-text_resultado = tk.Text(root, height=15, width=100)
-text_resultado.pack(pady=10)
+frame_tabla = tk.Frame(root)
+frame_tabla.pack(pady=10)
+#Que vaya la informacion en orden separados
+columnas = ("Cédula", "Apellidos", "Nombre", "Nota", "Calificacion")
+tabla = ttk.Treeview(frame_tabla, columns=columnas, show="headings", height=10)
+#distancia
+for col in columnas:
+    tabla.heading(col, text=col)
+    tabla.column(col, width=150, anchor="center")
 
-# Ejecutar la aplicación
+tabla.pack(fill="both", expand=True)
+
+# Programa principal
 root.mainloop()
