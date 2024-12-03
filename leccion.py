@@ -10,6 +10,10 @@
 # 5. Modificar la nota de un alumno a partir del DNI. 6. Mostrar alumnos suspensos 7. Mostrar alumno aprobados 8. Mostrar candidatos a M
 #MH (los que tengan un 10 de nota) 9. Modificar calificación: permite modificar la calificación calculada automáticamente
 
+
+
+#Tkinder para interfaz grafica con messagebox para ingresar datos y ver y ttk para ordenar los datos
+
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
@@ -17,7 +21,7 @@ from tkinter import ttk
 # Lista para almacenar los alumnos
 alumnos = []
 
-# Función para calcular la calificación a partir de la nota
+# Funcion para calcular la calificación a partir de la nota
 def calificacion(nota):
     if nota < 5:
         return "SS"
@@ -28,7 +32,7 @@ def calificacion(nota):
     else:
         return "SB"
 
-# Función para agregar un alumno
+# Funcion para agregar un alumno
 def agregar_alumno():
     cedula = entry_cedula.get()
     apellidos = entry_apellidos.get()
@@ -51,7 +55,7 @@ def agregar_alumno():
     except ValueError:
         messagebox.showerror("Error", "Por favor, ingrese una nota válida.")
 
-# Función para eliminar un alumno
+# Funcion para eliminar un alumno
 def eliminar_alumno():
     cedula = entry_cedula.get()
     global alumnos
@@ -67,9 +71,9 @@ def consultar_alumno():
         if alumno["cedula"] == cedula:
             messagebox.showinfo("Consulta", f"Apellidos: {alumno['apellidos']}\nNombre: {alumno['nombre']}\nNota: {alumno['nota']}\nCalificación: {alumno['calificacion']}")
             return
-    messagebox.showerror("Error", "No se encontró un alumno con esa cédula.")
+    messagebox.showerror("Error", "No se encontró un alumno con esa cedula.")
 
-# Función para modificar la nota de un alumno
+# Funcion para modificar la nota de un alumno
 def modificar_nota():
     cedula = entry_cedula.get()
     try:
@@ -92,11 +96,11 @@ def mostrar_alumnos():
     messagebox.showinfo("Alumnos", f"Se han mostrado {len(alumnos)} alumnos en la tabla.")
 
 # Funcion para mostrar los alumnos suspendidos (nota < 5)
-def mostrar_suspendidos():
+def suspendidos():
     actualizar_tabla([alumno for alumno in alumnos if alumno["nota"] < 5])
 
 # Funcion para mostrar los alumnos aprobados (nota >= 5)
-def mostrar_aprobados():
+def aprobados():
     actualizar_tabla([alumno for alumno in alumnos if alumno["nota"] >= 5])
 
 # Funcion para mostrar el cuadro de honor (nota >= 9)
@@ -162,10 +166,10 @@ btn_modificar.grid(row=0, column=3, padx=5, pady=5)
 btn_mostrar = tk.Button(frame_buttons, text="5-Mostrar Alumnos", command=mostrar_alumnos, bg="#F5F5F5", fg="black")
 btn_mostrar.grid(row=0, column=4, padx=5, pady=5)
 
-btn_suspendidos = tk.Button(frame_buttons, text="6-Suspendidos", command=mostrar_suspendidos, bg="#FF6347", fg="black")
+btn_suspendidos = tk.Button(frame_buttons, text="6-Suspendidos", command=suspendidos, bg="#FF6347", fg="black")
 btn_suspendidos.grid(row=0, column=5, padx=5, pady=5)
 
-btn_aprobados = tk.Button(frame_buttons, text="7-Aprobados", command=mostrar_aprobados, bg="#90EE90", fg="black")
+btn_aprobados = tk.Button(frame_buttons, text="7-Aprobados", command=aprobados, bg="#90EE90", fg="black")
 btn_aprobados.grid(row=0, column=6, padx=5, pady=5)
 
 btn_cuadro = tk.Button(frame_buttons, text="8-Cuadro de Honor", command=cuadro_de_honor, bg="#FFD700", fg="black")
