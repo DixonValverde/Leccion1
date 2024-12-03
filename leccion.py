@@ -21,16 +21,18 @@ from tkinter import ttk
 # Lista para almacenar los alumnos
 alumnos = []
 
-# Funcion para calcular la calificación a partir de la nota
+# Funcion para calcular la calificacion a partir de la nota
 def calificacion(nota):
     if nota < 5:
         return "SS"
-    elif 5 <= nota < 6.99:
+    elif 5 <= nota <= 6.99:  # Nota desde 5 hasta 6.99 inclusive
         return "AP"
-    elif 7 <= nota < 9:
+    elif 7 <= nota < 9:  # Nota desde 7 hasta antes de 9
         return "NT"
-    else:
+    else:  # Nota 9 o superior
         return "SB"
+
+
 
 # Funcion para agregar un alumno
 def agregar_alumno():
@@ -95,13 +97,13 @@ def mostrar_alumnos():
     actualizar_tabla()
     messagebox.showinfo("Alumnos", f"Se han mostrado {len(alumnos)} alumnos en la tabla.")
 
-# Funcion para mostrar los alumnos suspendidos (nota < 5)
+# Funcion para mostrar los alumnos suspendidos (nota < 6.99)
 def suspendidos():
-    actualizar_tabla([alumno for alumno in alumnos if alumno["nota"] < 5])
+    actualizar_tabla([alumno for alumno in alumnos if alumno["nota"] < 4.99])
 
-# Funcion para mostrar los alumnos aprobados (nota >= 5)
+# Funcion para mostrar los alumnos aprobados (nota >= 7)
 def aprobados():
-    actualizar_tabla([alumno for alumno in alumnos if alumno["nota"] >= 5])
+    actualizar_tabla([alumno for alumno in alumnos if alumno["nota"] >= 7])
 
 # Funcion para mostrar el cuadro de honor (nota >= 9)
 def cuadro_de_honor():
@@ -189,3 +191,5 @@ tabla.pack(fill="both", expand=True)
 
 # Programa principal
 root.mainloop()
+
+#Para ver suspendidos la nota debe ser 5 o menor
