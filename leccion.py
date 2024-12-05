@@ -23,7 +23,11 @@ alumnos = []
 
 # Funcion para calcular la calificacion a partir de la nota
 def calificacion(nota):
-    if nota < 5:
+    #si la nota es mayor a 10 saldra mensaje de error
+    if nota > 10:
+        messagebox.showerror("La nota no puede ser mayor a 10 ingrese un numero valido")
+        return None
+    elif nota < 5:
         return "SS"
     elif 5 <= nota <= 6.99:  # Nota desde 5 hasta 6.99 inclusive
         return "AP"
@@ -41,6 +45,9 @@ def agregar_alumno():
     nombre = entry_nombre.get()
     try:
         nota = float(entry_nota.get())
+        if nota > 10:
+            messagebox.showerror("La nota no puede ser mayor a 10 ingrese un numero valido.")
+            return
         if any(alumno["cedula"] == cedula for alumno in alumnos):
             messagebox.showerror("Error", "Ya existe un alumno con esa cédula.")
         else:
@@ -79,11 +86,14 @@ def consultar_alumno():
 def modificar_nota():
     cedula = entry_cedula.get()
     try:
-        nueva_nota = float(entry_nota.get())
+        newnota = float(entry_nota.get())
+        if newnota > 10:
+            messagebox.showerror("Error", "La nota no puede ser mayor a 10.")
+            return
         for alumno in alumnos:
             if alumno["cedula"] == cedula:
                 alumno["nota"] = nueva_nota
-                alumno["calificacion"] = calificacion(nueva_nota)
+                alumno["calificacion"] = calificacion(newnota)
                 limpiar_campos()
                 actualizar_tabla()
                 messagebox.showinfo("Éxito", "Nota modificada correctamente.")
