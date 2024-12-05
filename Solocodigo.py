@@ -93,15 +93,15 @@ def mostrar_mh():
 def menu():
     while True:
         print("\nGestor de alumnos")
-        print("1. Mostrar alumnos")
-        print("2. Agregar alumno")
-        print("3. Eliminar alumno")
-        print("4. Consultar nota y calificación")
-        print("5. Modificar nota")
-        print("6. Mostrar suspendidos")
-        print("7. Mostrar aprobados")
-        print("8. Mostrar candidatos a cuadro de honor")
-        print("9. Salir")
+        print("1- Mostrar alumnos")
+        print("2- Agregar alumno")
+        print("3- Eliminar alumno")
+        print("4- Consultar nota y calificación")
+        print("5- Modificar nota")
+        print("6- Mostrar suspendidos")
+        print("7- Mostrar aprobados")
+        print("8- Mostrar candidatos a cuadro de honor")
+        print("9- Salir")
 
         opcion = input("Seleccione una opcion: ")
         if opcion == "1":
